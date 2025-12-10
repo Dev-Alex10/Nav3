@@ -1,4 +1,4 @@
-package com.example.nav3.viewmodels
+package com.example.nav3.todo.viewmodels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +11,7 @@ class TodoDetailViewModel(
     val state = _state.asStateFlow()
 
     init {
-        println("TodoDetailViewModel initialized for $todo")
+        println("TodoDetailViewModel in-itialized for $todo")
     }
 
     override fun onCleared() {

@@ -1,4 +1,4 @@
-package com.example.nav3.screens
+package com.example.nav3.todo.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nav3.viewmodels.TodoListViewModel
+import com.example.nav3.todo.viewmodels.TodoListViewModel
 
 @Composable
 fun TodoListScreen(

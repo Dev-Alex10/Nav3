@@ -1,4 +1,4 @@
-package com.example.nav3.screens
+package com.example.nav3.todo.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nav3.viewmodels.TodoDetailViewModel
+import com.example.nav3.todo.viewmodels.TodoDetailViewModel
 
 @Composable
 fun TodoDetailScreen(
