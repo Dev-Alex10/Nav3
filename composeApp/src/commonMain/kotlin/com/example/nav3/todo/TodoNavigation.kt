@@ -1,56 +1,78 @@
 package com.example.nav3.todo
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.savedstate.serialization.SavedStateConfiguration
+import com.example.nav3.navigation.Navigator
 import com.example.nav3.navigation.Route
+import com.example.nav3.navigation.TOP_LEVEL_DESTINATIONS
+import com.example.nav3.navigation.TodoNavigationBar
+import com.example.nav3.navigation.rememberNavigationState
+import com.example.nav3.navigation.toEntries
+import com.example.nav3.settings.SettingsScreen
 import com.example.nav3.todo.screens.TodoDetailScreen
 import com.example.nav3.todo.screens.TodoListScreen
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
 
 @Composable
 fun TodoNavigation(
     modifier: Modifier = Modifier
 ) {
-    val todoBackStack = rememberNavBackStack(
-        configuration = SavedStateConfiguration {
-            serializersModule = SerializersModule {
-                polymorphic(NavKey::class) {
-                    subclass(Route.Todo.TodoList::class, Route.Todo.TodoList.serializer())
-                    subclass(Route.Todo.TodoDetail::class, Route.Todo.TodoDetail.serializer())
-                }
-            }
-        },
-        Route.Todo.TodoList
+    val navigationState = rememberNavigationState(
+        startRoute = Route.Todo.TodoList,
+        topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
     )
+    val navigator = remember {
+        Navigator(navigationState)
+    }
 
-    NavDisplay(
-        backStack = todoBackStack,
+    Scaffold(
         modifier = modifier,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
-        ),
-        entryProvider = entryProvider {
-            entry<Route.Todo.TodoList> {
-                TodoListScreen(
-                    onTodoClick = {
-                        todoBackStack.add(Route.Todo.TodoDetail(it))
-                    }
-                )
-            }
-            entry<Route.Todo.TodoDetail> {
-                TodoDetailScreen(
-                    todo = it.todo
-                )
-            }
+        bottomBar = {
+            TodoNavigationBar(
+                selectedKey = navigationState.topLevelRoute,
+                onSelectKey = {
+                    navigator.navigate(it)
+                }
+            )
         }
-    )
+    ) { innerPadding ->
+        NavDisplay(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            onBack = navigator::goBack,
+            entries = navigationState.toEntries(
+                entryProvider {
+                    entry<Route.Todo.TodoList> {
+                        TodoListScreen(
+                            onTodoClick = {
+                                navigator.navigate(Route.Todo.TodoDetail(it))
+                            }
+                        )
+                    }
+                    entry<Route.Todo.TodoFavorites> {
+                        TodoListScreen(
+                            onTodoClick = {
+                                navigator.navigate(Route.Todo.TodoDetail(it))
+                            }
+                        )
+                    }
+                    entry<Route.Todo.TodoDetail> {
+                        TodoDetailScreen(
+                            todo = it.todo
+                        )
+                    }
+
+                    entry<Route.Settings> {
+                        SettingsScreen()
+                    }
+                }
+            ),
+        )
+    }
 }
