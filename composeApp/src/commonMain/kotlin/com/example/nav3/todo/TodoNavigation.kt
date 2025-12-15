@@ -14,6 +14,8 @@ import com.example.nav3.navigation.TOP_LEVEL_DESTINATIONS
 import com.example.nav3.navigation.TodoNavigationBar
 import com.example.nav3.navigation.rememberNavigationState
 import com.example.nav3.navigation.toEntries
+import com.example.nav3.scenes.ListDetailScene
+import com.example.nav3.scenes.rememberListDetailSceneStrategy
 import com.example.nav3.settings.SettingsScreen
 import com.example.nav3.todo.screens.TodoDetailScreen
 import com.example.nav3.todo.screens.TodoListScreen
@@ -46,23 +48,30 @@ fun TodoNavigation(
                 .fillMaxSize()
                 .padding(innerPadding),
             onBack = navigator::goBack,
+            sceneStrategy = rememberListDetailSceneStrategy(),
             entries = navigationState.toEntries(
                 entryProvider {
-                    entry<Route.Todo.TodoList> {
+                    entry<Route.Todo.TodoList> (
+                        metadata = ListDetailScene.listPane()
+                    ){
                         TodoListScreen(
                             onTodoClick = {
                                 navigator.navigate(Route.Todo.TodoDetail(it))
                             }
                         )
                     }
-                    entry<Route.Todo.TodoFavorites> {
+                    entry<Route.Todo.TodoFavorites>(
+                        metadata = ListDetailScene.listPane()
+                    ) {
                         TodoListScreen(
                             onTodoClick = {
                                 navigator.navigate(Route.Todo.TodoDetail(it))
                             }
                         )
                     }
-                    entry<Route.Todo.TodoDetail> {
+                    entry<Route.Todo.TodoDetail> (
+                        metadata = ListDetailScene.detailPane()
+                    ) {
                         TodoDetailScreen(
                             todo = it.todo
                         )
