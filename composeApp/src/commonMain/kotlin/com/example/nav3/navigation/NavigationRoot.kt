@@ -1,5 +1,9 @@
 package com.example.nav3.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -30,6 +34,10 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
     NavDisplay(
         modifier = modifier,
         backStack = rootBackStack,
+        transitionSpec = {
+            fadeIn(animationSpec = tween(durationMillis = 1000)) togetherWith
+                    fadeOut(animationSpec = tween(durationMillis = 1000))
+        },
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
