@@ -2,18 +2,29 @@ package com.example.nav3.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.nav3.navigation.ResultStore
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    resultStore: ResultStore,
+    onChangeSettingClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val setting = resultStore.getResult<String>("main_setting")
     Box(
         modifier = modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Settings")
+        Button(
+            onClick = onChangeSettingClick
+        ) {
+            Text("Current setting: ${setting ?: "Default"}")
+        }
     }
 }

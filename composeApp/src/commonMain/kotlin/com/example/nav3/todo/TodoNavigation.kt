@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.nav3.navigation.Navigator
@@ -13,9 +14,11 @@ import com.example.nav3.navigation.Route
 import com.example.nav3.navigation.TOP_LEVEL_DESTINATIONS
 import com.example.nav3.navigation.TodoNavigationBar
 import com.example.nav3.navigation.rememberNavigationState
+import com.example.nav3.navigation.rememberResultStore
 import com.example.nav3.navigation.toEntries
 import com.example.nav3.scenes.ListDetailScene
 import com.example.nav3.scenes.rememberListDetailSceneStrategy
+import com.example.nav3.settings.ChangeSettingScreen
 import com.example.nav3.settings.SettingsScreen
 import com.example.nav3.todo.screens.TodoDetailScreen
 import com.example.nav3.todo.screens.TodoListScreen
@@ -31,6 +34,7 @@ fun TodoNavigation(
     val navigator = remember {
         Navigator(navigationState)
     }
+    val resultStore = rememberResultStore()
 
     Scaffold(
         modifier = modifier,
@@ -51,9 +55,9 @@ fun TodoNavigation(
             sceneStrategy = rememberListDetailSceneStrategy(),
             entries = navigationState.toEntries(
                 entryProvider {
-                    entry<Route.Todo.TodoList> (
+                    entry<Route.Todo.TodoList>(
                         metadata = ListDetailScene.listPane()
-                    ){
+                    ) {
                         TodoListScreen(
                             onTodoClick = {
                                 navigator.navigate(Route.Todo.TodoDetail(it))
@@ -69,7 +73,7 @@ fun TodoNavigation(
                             }
                         )
                     }
-                    entry<Route.Todo.TodoDetail> (
+                    entry<Route.Todo.TodoDetail>(
                         metadata = ListDetailScene.detailPane()
                     ) {
                         TodoDetailScreen(
@@ -78,7 +82,20 @@ fun TodoNavigation(
                     }
 
                     entry<Route.Settings> {
-                        SettingsScreen()
+                        SettingsScreen(
+                            resultStore = resultStore,
+                            onChangeSettingClick = { navigator.navigate(Route.ChangeSettings) }
+                        )
+                    }
+
+                    entry<Route.ChangeSettings> {
+                        ChangeSettingScreen(
+                            resultStore = resultStore,
+                            onSave = { navigator.goBack() },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                        )
                     }
                 }
             ),
